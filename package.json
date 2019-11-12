@@ -1,4 +1,17 @@
 {
   "name": "gu-fall2019-dbms-project",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "description": "This example is so cool.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js",
+    "test": "node test.js"
+  },
+  "engines": {
+    "node": "10.x"
+  },
+  "dependencies": {
+    "ejs": "^2.5.6",
+    "express": "^4.15.2"
+  },
  }
