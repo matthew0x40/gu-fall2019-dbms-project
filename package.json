@@ -3,15 +3,17 @@
   "version": "1.0.0",
   "description": "This example is so cool.",
   "main": "index.js",
+  "author": "",
+  "license": "MIT",
   "scripts": {
-    "test": "node index.js",
+    "start": "node index.js",
     "test": "node test.js"
-  },
-  "engines": {
-    "node": "10.x"
   },
   "dependencies": {
     "ejs": "^2.5.6",
     "express": "^4.15.2"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }
