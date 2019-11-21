@@ -9,7 +9,7 @@
 	<div class="show-list">
     <% shows.forEach(function(show) { %>
 		<div class="show">
-			<h3><%= show.name %></h3>
+			<a href="/movie/<%= show.show_id %>"><h3><%= show.name %></h3></a>
 			<p>Type: <strong><%= show.show_type %></strong></p>
 			<p>Rating: <strong><%= show.rating %></strong></p>
 			<p>Length: <strong><%= show.length_minutes %></strong></p>

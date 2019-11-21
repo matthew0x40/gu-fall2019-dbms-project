@@ -17,5 +17,15 @@ router.get('/', (req, res) => {
     });    
 });
 
+router.get('/movie/:showId', (req, res) => {
+	const showId = res.params.showId;
+	
+    db.query('SELECT * FROM shows WHERE show_id = :showId', { showId }, function (error, results, fields) {
+        res.render('pages/show', {
+            show: results[0]
+        });
+    });    
+});
+
 app.use('/', router);
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
