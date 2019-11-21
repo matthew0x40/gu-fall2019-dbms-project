@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/movie/:showId', (req, res) => {
-	const showId = res.params.showId;
+	const showId = req.params.showId;
 	
     db.query('SELECT * FROM shows WHERE show_id = :showId', { showId }, function (error, results, fields) {
         res.render('pages/show', {
