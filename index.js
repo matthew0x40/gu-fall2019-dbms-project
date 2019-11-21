@@ -12,7 +12,7 @@ app.set('view engine', 'ejs');
 router.get('/', (req, res) => {
     db.query('SELECT * FROM shows', function (error, results, fields) {
         res.render('pages/index', {
-            testdata: JSON.stringify(results)
+            shows: results
         });
     });    
 });
