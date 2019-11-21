@@ -17,5 +17,5 @@ router.get('/', (req, res) => {
     });    
 });
 
-app.use(router, '/');
+app.use('/', router);
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
