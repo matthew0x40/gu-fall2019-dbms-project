@@ -9,12 +9,22 @@
 				<a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
 			</li>
 			<li class="nav-item">
-					<a class="nav-link" href="/bestscores">Best Movies <span class="sr-only">(current)</span></a>
-				</li>
+				<a class="nav-link" href="/bestscores">Best Movies <span class="sr-only">(current)</span></a>
+			</li>
 		</ul>
 		<form class="form-inline mt-2 mt-md-0" method="GET" action="/search">
 			<input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
 			<button class="btn btn-light" type="submit">Search</button>
 		</form>
+		<ul class="navbar-nav">
+		<% if (locals.userEmail) { %>
+			<li class="nav-item">
+				<span>Logged in as <%= locals.userName %> <a href="/logout">logout</a></span>
+			</li>
+		<% } else { %>
+			<li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+			<li class="nav-item"><a class="nav-link" href="/register">register</a></li>
+		<% } %>
+		</ul>
 	</div>
 </nav>

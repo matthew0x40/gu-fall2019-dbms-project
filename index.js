@@ -131,7 +131,6 @@ router.get('/leavereview', (req, res) => {
     let showId = req.query.showId;
     let rating = req.query.rating;
     let reviewText = req.query.reviewText;
-    let reviewText = req.query.reviewText;
 
     db.query('INSERT INTO review (show_id, review_text, score, review_date, reviewer_id) VALUES (?,?,?,?,?)' [show_id, reviewText, score, today(), userID], function (error, results, fields) {
         res.render('pages/index', {
