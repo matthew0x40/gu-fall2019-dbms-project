@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 5000;
 const express = require('express');
 const app = express();
 const router = express.Router();
-const db = require('src/database');
+const db = require('./src/database.js');
 
 app.set('view engine', 'ejs');
 
