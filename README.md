@@ -17,3 +17,9 @@ automatically deploy to Heroku.
   1. Clone the repo
   2. Run `npm install`
   3. Copy `.env.example` to just `.env` and paste in MySQL connection string
+  
+## Run
+
+  - Run `npm index.js` to start node server (type Ctrl+C to stop server)
+  - Run `nodemon index.js` to start node server with hot-reloading
+      - Requires `nodemon` to be installed, run `npm install -g nodemon` to install nodemon.
