@@ -35,12 +35,35 @@ router.get('/search', (req, res) => {
     });    
 });
 
+router.get('/leavereview', (req, res) => {
+    let showId = req.query.showId;
+    let rating = req.query.rating;
+    let reviewText = req.query.reviewText;
+    let reviewText = req.query.reviewText;
+
+    db.query('INSERT INTO review (show_id, review_text, score, review_date, reviewer_id) VALUES (?,?,?,?,?)' [show_id, reviewText, score, today(), userID], function (error, results, fields) {
+        res.render('pages/index', {
+            shows: results
+        });
+    });
+});
+
+router.get('/bestscores', (req, res) => {
+
+    db.query('SELECT * FROM review r JOIN shows s USING (show_id) GROUP BY r.show_id SORT BY AVG(r.score) DESC', function (error, results, fields) {
+        res.render('pages/bestScoreResults', {
+            shows: results,
+        });
+    });    
+});
+
 router.get('/movie/:showId', (req, res) => {
 	const showId = req.params.showId;
 	
-    db.query('SELECT * FROM shows WHERE show_id = ?', [ showId ], function (error, results, fields) {
+    db.query('SELECT * FROM shows LEFT JOIN review USING (show_id) JOIN show_cast_member USING (show_id) JOIN cast_member USING (cast_member_id) WHERE show_id = ?', [ showId ], function (error, results, fields) {
         res.render('pages/show', {
-            show: results && results[0]
+            show: results,
+            showId: showId,
         });
     });    
 });

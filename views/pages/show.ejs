@@ -1,22 +1,78 @@
 <!doctype html>
 <html>
 <head>
-    <% include ../partials/head %>
+	<% include ../partials/head %>
 </head>
 <body>
-	<% if (show) { %>
+	<% include ../partials/navbar %>
+
+	<% if (show[0]) { %>
 	<div class="show">
-		<a href="/movie/<%= show.show_id %>"><h3><%= show.name %></h3></a>
-		<p>Type: <strong><%= show.show_type %></strong></p>
-		<p>Rating: <strong><%= show.rating %></strong></p>
-		<p>Length: <strong><%= show.length_minutes %></strong></p>
-		<p>Release Date: <strong><%= show.release_date %></strong></p>
+		<a href="/movie/<%= show[0].show_id %>"><h3><%= show[0].name %></h3></a>
+		<p>Type: <strong><%= show[0].show_type %></strong></p>
+		<p>Rating: <strong><%= show[0].rating %></strong></p>
+		<p>Length: <strong><%= show[0].length_minutes %></strong></p>
+		<p>Release Date: <strong><%= show[0].release_date %></strong></p>
+		<br>
+		<p><strong>Cast Members:</strong></p>
+		<% show.forEach(function(show) { %>
+			<div class="castmember">
+				<p><%=   show.cast_role + " - " + show.first_name + " " + show.last_name %></p>
+			</div>
+		<% }); %>
 	</div>
 	
 	<h2>Reviews</h2>
-	<p>Hello world.</p>
+	<div class="card" style="width: 18rem;">
+			<div class="card-body">
+			  <h5 class="card-title"><%= show.score %></h5>
+			  <h6 class="card-subtitle mb-2 text-muted"><%= show.review_date %></h6>
+			  <p class="card-text"><%= show.review_text %></p>
+			</div>
+	</div>
+
+	<div class="col-md-4 mb-4">
+		<form method="GET" action="/leavereview">
+			<input type="hidden" name="showId" value="<%= showId >" />
+			<br>
+			<br>
+			<h4>Leave a Review: </h4>
+			<div class="form-group">
+					<label for="formControlRange">Score</label>
+					<input type="range" class="form-control-range" min="0" max="10" onchange=updateTextInput(this.value);>
+					<input type="text" id="textInput" value="5" name="rating" readonly>
+				</div>
+			<div class="form-group">
+					<label for="exampleFormControlTextarea1">Review: </label>
+					<textarea class="form-control" name="reviewText" rows="3"></textarea>
+			</div>
+			<input type="hidden" name=""
+			<button type="submit" class="btn btn-primary" id="reviewSubmit">Submit</button>
+		</form>
+
+	</div>
+
 	<% } else { %>
 	<p>Show not found.</p>
 	<% } %>
+
+	<script>
+	function updateTextInput(val) {
+          document.getElementById('textInput').value=val; 
+		};
+/*
+	document.getElementById("reviewSubmit").addEventListener("click", function () {
+		let score = document.getElementById("rating").value;
+		let reviewText = document.getElementById("reviewText").value;
+
+		db.query('INSERT INTO review (show_id, review_text, score, review_date, reviewer_id) VALUES (?,?,?,?,?)' [show.show_id, reviewText, score, today(), userID], function (error, results, fields) {
+        res.render('pages/index', {
+            shows: results
+        });
+	});
+});
+*/
+	
+	</script>
 </body>
 </html>

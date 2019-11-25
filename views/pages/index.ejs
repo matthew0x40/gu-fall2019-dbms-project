@@ -1,15 +1,10 @@
 <!doctype html>
 <html>
 <head>
-    <% include ../partials/head %>
+	<% include ../partials/head %>
 </head>
 <body>
-
-	<form method="GET" action="/search">
-		<input type="search" name="q" id="searchBox" required>
-		<button type="submit">Go</button>
-	</form>
-	
+	<% include ../partials/navbar %>
 	<div class="show-list">
     <% shows.forEach(function(show) { %>
 		<div class="show">
