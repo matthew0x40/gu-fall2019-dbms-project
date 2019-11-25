@@ -1,8 +1,9 @@
 'use strict';
 
-const express = require('express');
-const path = require('path');
+require('dotenv').config();
+
 const PORT = process.env.PORT || 5000;
+const express = require('express');
 const app = express();
 const router = express.Router();
 const db = require('./src/database.js');
@@ -19,6 +20,18 @@ document.getElementById('searchBox').addEventListener('change', function () {
     });
 })
 
+router.use(function(req, res, next) {
+    res.header('X-XSS-Protection', 1);
+    next();
+});
+
+router.get('/', (req, res) => {
+    db.query('SELECT * FROM shows', function (error, results, fields) {
+        res.render('pages/index', {
+            shows: results
+        });
+    });    
+});
 
 router.get('/movie/:showId', (req, res) => {
 	const showId = req.params.showId;
