@@ -29,7 +29,7 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(function(req, res, next) {
     res.header('X-XSS-Protection', 1);
-    res.locals = { 
+    res.locals = {
         userId: req.session.userId || undefined,
         userName: req.session.userName || undefined,
         userType: req.session.userType || undefined,
@@ -43,7 +43,7 @@ router.get('/', (req, res) => {
         res.render('pages/index', {
             shows: results,
         });
-    });    
+    });
 });
 
 router.get('/register', (req, res) => {
@@ -101,7 +101,7 @@ router.post('/login', function (req, res) {
                         req.session.userType = userObj.user_type;
                         req.session.userName = userObj.name;
                         req.session.userEmail = userObj.email;
-                        
+
                         res.redirect(req.body.cont || '/');
                     });
                 }
@@ -124,17 +124,40 @@ router.get('/search', (req, res) => {
             shows: results,
             searchText: searchText,
         });
-    });    
+    });
+});
+
+router.get('/leavereview', (req, res) => {
+    let showId = req.query.showId;
+    let rating = req.query.rating;
+    let reviewText = req.query.reviewText;
+    let reviewText = req.query.reviewText;
+
+    db.query('INSERT INTO review (show_id, review_text, score, review_date, reviewer_id) VALUES (?,?,?,?,?)' [show_id, reviewText, score, today(), userID], function (error, results, fields) {
+        res.render('pages/index', {
+            shows: results
+        });
+    });
+});
+
+router.get('/bestscores', (req, res) => {
+
+    db.query('SELECT * FROM review r JOIN shows s USING (show_id) GROUP BY r.show_id SORT BY AVG(r.score) DESC', function (error, results, fields) {
+        res.render('pages/bestScoreResults', {
+            shows: results,
+        });
+    });
 });
 
 router.get('/movie/:showId', (req, res) => {
 	const showId = req.params.showId;
-	
-    db.query('SELECT * FROM shows WHERE show_id = ?', [ showId ], function (error, results, fields) {
+
+    db.query('SELECT * FROM shows LEFT JOIN review USING (show_id) JOIN show_cast_member USING (show_id) JOIN cast_member USING (cast_member_id) WHERE show_id = ?', [ showId ], function (error, results, fields) {
         res.render('pages/show', {
-            show: results && results[0]
+            show: results,
+            showId: showId,
         });
-    });    
+    });
 });
 
 app.use('/', router);
