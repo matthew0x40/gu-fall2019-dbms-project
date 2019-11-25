@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+    <% include ../partials/head %>
+</head>
+<body>
+    <% if (locals.errorMessage) { %>
+        <div class="errorMessage"><%= errorMessage %></div>
+    <% } %>
+    <% if (locals.successMessage) { %>
+        <div class="successMessage"><%= successMessage %></div>
+    <% } %>
+
+	<form method="POST" action="/register">
+		<input type="text" name="name" required placeholder="Name"><br/>
+		<input type="text" name="email" required placeholder="Email"><br/>
+		<input type="password" name="password" required placeholder="Password"><br/>
+        
+		<button type="submit">Create account</button>
+	</form>
+</body>
+</html>

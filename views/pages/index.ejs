@@ -4,6 +4,11 @@
     <% include ../partials/head %>
 </head>
 <body>
+    <% if (locals.userEmail) { %>
+        <div>Logged in as <%= locals.userName %> <a href="/logout">logout</a></div>
+    <% } else { %>
+        <div>Not logged in. <a href="/login">Login</a> or <a href="/register">Register</a></div>
+    <% } %>
 
 	<form method="GET" action="/search">
 		<input type="search" name="q" id="searchBox" required>

@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <% include ../partials/head %>
+</head>
+<body>
+    <% if (locals.errorMessage) { %>
+        <div class="errorMessage"><%= errorMessage %></div>
+    <% } %>
+
+	<form method="POST" action="/login">
+		<input type="hidden" name="cont" value="<%= locals.cont ? cont : '/' %>" >
+		<input type="text" name="email" required placeholder="Email"><br/>
+		<input type="password" name="password" required placeholder="Password"><br/>
+        
+		<button type="submit">Login</button>
+	</form>
+	
+</body>
+</html>
