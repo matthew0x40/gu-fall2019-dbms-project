@@ -10,15 +10,6 @@ const db = require('./src/database.js');
 
 app.set('view engine', 'ejs');
 
-document.getElementById('searchBox').addEventListener('change', function () {
-    router.get('/', (req, res) => {
-        db.query('SELECT name, show_id FROM shows WHERE INSTR(name, ' + document.getElementById('searchBox').value + ') > 0;', function (error, results, fields) {
-            res.render('pages/index', {
-                shows: results
-            });
-        });    
-    });
-})
 
 router.use(function(req, res, next) {
     res.header('X-XSS-Protection', 1);
@@ -29,6 +20,17 @@ router.get('/', (req, res) => {
     db.query('SELECT * FROM shows', function (error, results, fields) {
         res.render('pages/index', {
             shows: results
+        });
+    });    
+});
+
+router.get('/search', (req, res) => {
+    let searchText = req.query.q;
+
+    db.query('SELECT * FROM shows WHERE INSTR(name, ?) > 0', [ searchText ], function (error, results, fields) {
+        res.render('pages/searchResults', {
+            shows: results,
+            searchText: searchText,
         });
     });    
 });

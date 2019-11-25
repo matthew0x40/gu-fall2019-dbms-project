@@ -4,9 +4,10 @@
     <% include ../partials/head %>
 </head>
 <body>
+	<p>This is the search results page!</p>
 
 	<form method="GET" action="/search">
-		<input type="search" name="q" id="searchBox" required>
+		<input type="search" name="q" id="searchBox" required value="<%= searchText %>">
 		<button type="submit">Go</button>
 	</form>
 	
