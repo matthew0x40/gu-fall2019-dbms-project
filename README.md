@@ -11,3 +11,9 @@ which will hot-reload the server without needing to manually restart.
 
 The project is deployed to gu-fall2019-dbms-project.herokuapp.com. Any pushes to this repository will
 automatically deploy to Heroku.
+
+## Setup
+
+  1. Clone the repo
+  2. Run `npm install`
+  3. Copy `.env.example` to just `.env` and paste in MySQL connection string
