@@ -2,6 +2,15 @@
 <html>
 <head>
 	<% include ../partials/head %>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		datepicker('#releaseDateInput', {
+			formatter: (input, date, instance) => {
+				input.value = date.toISOString().slice(0,10);
+			}
+		});
+	});
+	</script>
 </head>
 <body>
 	<% include ../partials/navbar %>
@@ -12,7 +21,10 @@
 			<div class="field">
 				<label>Show Type: </label>
 				<div class="values">
-					<textarea class="form-control" name="showType" rows="1" cols="50" required></textarea>
+					<select name="showType" required>
+						<option value="movie">Movie</option>
+						<option value="tv-show">TV-show</option>
+					</select>
 				</div>
 			</div>
             <hr/>
@@ -26,21 +38,25 @@
             <div class="field">
 				<label>Rating: </label>
 				<div class="values">
-					<textarea class="form-control" name="showRating" rows="1" cols="50" required></textarea>
+					<select name="showRating" required>
+						<% showRatingTypes.forEach(ratingType => { %>
+							<option value="<%= ratingType %>"><%= ratingType %></option>
+						<% }) %>
+					</select>
 				</div>
 			</div>
             <hr/>
             <div class="field">
 				<label>Release Date: </label>
 				<div class="values">
-					<textarea class="form-control" name="showRelease" rows="1" cols="50" required></textarea>
+					<input id="releaseDateInput" type="text" class="form-control" name="showRelease" required>
 				</div>
 			</div>
             <hr/>
             <div class="field">
 				<label>Length: </label>
 				<div class="values">
-					<textarea class="form-control" name="showLength" rows="1" cols="50" required></textarea>
+					<input type="number" class="form-control" name="showLength" placeholder="Length in minutes" required/>
 				</div>
 			</div>
 			<hr/>

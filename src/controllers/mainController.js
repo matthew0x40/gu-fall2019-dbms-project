@@ -22,7 +22,9 @@ router.get('/search', async (req, res) => {
 });
 
 router.get('/addmovie', async (req, res) => {
-    res.render('pages/addMovie', {});
+    res.render('pages/addMovie', {
+        showRatingTypes: (await search.getFilterOptionChoices()).available.rating,
+    });
 });
 
 
