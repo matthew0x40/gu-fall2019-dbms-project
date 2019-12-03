@@ -74,4 +74,32 @@ router.get('/forms/getCastMembers', async (req, res) => {
     res.json(searchResults);
 });
 
+router.post('/forms/addNewMovie', async (req, res) => {
+    let showType = req.body.showType;
+    let showRating = req.body.showRating;
+    let showName = req.body.showName;
+    let showRelease = req.body.showRelease;
+    let showLength = parseInt(req.body.showLength);
+
+    
+    if (!req.session.loggedIn || typeof req.session.userId !== 'number') {
+        req.session.leaveReviewError = 'Must be logged in to leave a movie.';
+        res.redirect(req.body.cont || '/');
+        return;
+    }
+    
+
+    try {
+        const result = await db.query(
+            'INSERT INTO shows (show_type, rating, name, release_date, length_minutes) VALUES (?,?,?,?,?)',
+            [showType, showRating, showName, showRelease, showLength]
+        );
+        res.redirect(req.body.cont || '/');
+    } catch (e) {
+        console.log(e);
+        req.session.leaveReviewError = 'Failed to add your movie, try again later.';
+        res.redirect(req.body.cont || '/');
+    }
+});
+
 module.exports = router;

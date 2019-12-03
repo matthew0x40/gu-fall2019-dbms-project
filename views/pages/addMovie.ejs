@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+	<% include ../partials/head %>
+</head>
+<body>
+	<% include ../partials/navbar %>
+	<div class="wrapper">
+
+		<h2>Add New Show</h2>
+		<form class="form-box" method="POST" action="/forms/addNewMovie">
+			<div class="field">
+				<label>Show Type: </label>
+				<div class="values">
+					<textarea class="form-control" name="showType" rows="1" cols="50" required></textarea>
+				</div>
+			</div>
+            <hr/>
+            <div class="field">
+				<label>Name: </label>
+				<div class="values">
+					<textarea class="form-control" name="showName" rows="1" cols="50" required></textarea>
+				</div>
+			</div>
+            <hr/>
+            <div class="field">
+				<label>Rating: </label>
+				<div class="values">
+					<textarea class="form-control" name="showRating" rows="1" cols="50" required></textarea>
+				</div>
+			</div>
+            <hr/>
+            <div class="field">
+				<label>Release Date: </label>
+				<div class="values">
+					<textarea class="form-control" name="showRelease" rows="1" cols="50" required></textarea>
+				</div>
+			</div>
+            <hr/>
+            <div class="field">
+				<label>Length: </label>
+				<div class="values">
+					<textarea class="form-control" name="showLength" rows="1" cols="50" required></textarea>
+				</div>
+			</div>
+			<hr/>
+			<div class="field">
+				<div class="label">&nbsp;</div>
+				<% if (isLoggedIn) { %>
+					<button type="submit">Submit new movie</button>
+				<% } else { %>
+					<a href="/login">Register</a>
+					<span>&nbsp;or&nbsp;</span>
+					<a href="/login?cont=<%= currentURL %>">login</a>
+					<span>&nbsp;to submit a movie</span>
+				<% } %>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

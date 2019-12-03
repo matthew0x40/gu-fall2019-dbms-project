@@ -21,6 +21,10 @@ router.get('/search', async (req, res) => {
     });
 });
 
+router.get('/addmovie', async (req, res) => {
+    res.render('pages/addMovie', {});
+});
+
 
 router.get('/:type(movie|tv-show)/:showId', async (req, res) => {
 	const showId = req.params.showId;
