@@ -1,0 +1,11 @@
+<div class="select-rating <%= locals.disabled ? 'disabled' : '' %>">
+    <input type="hidden"
+        name="<%= locals.name ? name : 'score' %>"
+        value="<%= locals.value ? value : '' %>"
+        <%= locals.required ? 'required' : '' %> />
+    <span class="rating" data-index="0">○</span>
+    <span class="rating" data-index="1">○</span>
+    <span class="rating" data-index="2">○</span>
+    <span class="rating" data-index="3">○</span>
+    <span class="rating" data-index="4">○</span>
+</div>

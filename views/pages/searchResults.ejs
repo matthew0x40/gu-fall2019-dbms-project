@@ -2,21 +2,209 @@
 <html>
 <head>
     <% include ../partials/head %>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const releaseDateStart = datepicker('.releaseDatePicker.start', {
+			id: 1,
+			formatter: (input, date, instance) => {
+				input.value = date.toISOString().slice(0,10);
+			}
+		});
+		const releaseDateEnd = datepicker('.releaseDatePicker.end', {
+			id: 1,
+			formatter: (input, date, instance) => {
+				input.value = date.toISOString().slice(0,10);
+			}
+		});
+
+		document.querySelectorAll('.filter-option').forEach(el => {
+			el.addEventListener('click', function(event) {
+				let inputEl = el.closest('.field').querySelector('input[type=hidden]');
+				let inputValues = !inputEl.value.length ? {all: 'add'} : JSON.parse(inputEl.value);
+				let myValue = (el.getAttribute('data-value') || el.innerText).trim();
+
+				if (el.classList.contains('all') || el.classList.contains('radio')) {
+					el.closest('.field').querySelectorAll('.filter-option:not(.all)').forEach(x => {
+						x.classList.remove('add', 'remove')
+					});
+					el.classList.add('add');
+					inputValues = {[myValue]: 'add'};
+				} else {
+					if (el.classList.contains('add')) {
+						el.classList.remove('add');
+						el.classList.add('remove');
+						inputValues[myValue] = 'remove';
+					} else if (el.classList.contains('remove')) {
+						el.classList.remove('remove');
+						delete inputValues[myValue];
+					} else {
+						el.classList.add('add');
+						inputValues[myValue] = 'add';
+					}
+
+					let allOption = el.closest('.field').querySelector('.filter-option.all');
+					if (allOption) {
+						let numOptions = el.closest('.field')
+							.querySelectorAll('.filter-option:not(.all)').length;
+						let numDefaults = el.closest('.field')
+							.querySelectorAll('.filter-option:not(.all):not(.add):not(.remove)').length;
+
+						if (numOptions === numDefaults) {
+							allOption.classList.add('add');
+							inputValues.all = 'add';
+						} else {
+							allOption.classList.remove('add');
+							delete inputValues.all;
+						}
+					}
+				}
+
+				inputEl.value = JSON.stringify(inputValues);
+			});
+		});
+	});
+	</script>
 </head>
 <body>
 	<% include ../partials/navbar %>
-	<p>This is the search results page!</p>
-	
-	<div class="show-list">
-    <% shows.forEach(function(show) { %>
-		<div class="show">
-			<a href="/movie/<%= show.show_id %>"><h3><%= show.name %></h3></a>
-			<p>Type: <strong><%= show.show_type %></strong></p>
-			<p>Rating: <strong><%= show.rating %></strong></p>
-			<p>Length: <strong><%= show.length_minutes %></strong></p>
-			<p>Release Date: <strong><%= show.release_date %></strong></p>
-		</div>
-	<% }); %>
+	<div class="wrapper">
+		<h1>Find Shows</h1>
+		<form class="form-box filter-box" method="GET" action="/search">
+			<div class="field">
+				<div class="label">Show Title</div>
+				<div class="values">
+					<input type="search" name="title" value="<%= defaultValues.title %>" />
+				</div>
+			</div>
+			<div class="field">
+				<input type="hidden" name="type" value="<%= JSON.stringify(defaultValues.type) %>" />
+				<div class="label">Type</div>
+				<div class="values">
+					<div class="filter-option all <%= defaultValues.type.all %>" data-value="all">
+						<span class="icon"></span>
+						<span>All</span>
+					</div>
+					<% optionChoices.type.forEach(typeOpt => { %>
+						<div class="filter-option <%= defaultValues.type[typeOpt] %>" data-value="<%= typeOpt %>">
+							<span class="icon"></span>
+							<span><%= typeOpt %></span>
+						</div>
+					<% }); %>
+				</div>
+			</div>
+			<div class="field">
+				<input type="hidden" name="rating" value="<%= JSON.stringify(defaultValues.rating) %>" />
+				<div class="label">Film Rating</div>
+				<div class="values">
+					<div class="filter-option all <%= defaultValues.rating.all %>" data-value="all">
+						<span class="icon"></span>
+						<span>All</span>
+					</div>
+					<% optionChoices.rating.forEach(ratingOpt => { %>
+						<div class="filter-option <%= defaultValues.rating[ratingOpt] %>" data-value="<%= ratingOpt %>">
+							<span class="icon"></span>
+							<span><%= ratingOpt %></span>
+						</div>
+					<% }); %>
+				</div>
+			</div>
+			<div class="field">
+				<input type="hidden" name="genres" value="<%= JSON.stringify(defaultValues.genres) %>" />
+				<div class="label">Genres</div>
+				<div class="values">
+					<div class="filter-option all <%= defaultValues.genres.all %>" data-value="all">
+						<span class="icon"></span>
+						<span>All</span>
+					</div>
+					<% optionChoices.genres.forEach(genre => { %>
+						<div class="filter-option <%= defaultValues.genres[genre] %>" data-value="<%= genre %>">
+							<span class="icon"></span>
+							<span><%= genre %></span>
+						</div>
+					<% }); %>
+				</div>
+			</div>
+			<div class="field">
+				<input type="hidden" name="stars" value="<%= JSON.stringify(defaultValues.stars) %>" />
+				<div class="label">Stars</div>
+				<div class="values">
+					<div class="filter-option all <%= defaultValues.stars.all %>" data-value="all">
+						<span class="icon"></span>
+						<span>All</span>
+					</div>
+					<% optionChoices.stars.forEach(star => { %>
+						<div class="filter-option <%= defaultValues.stars[star] %>" data-value="<%= star %>">
+							<span class="icon"></span>
+							<span><%= star %> Stars</span>
+						</div>
+					<% }); %>
+				</div>
+			</div>
+			<hr/>
+			<div class="field">
+				<div class="label">Release Date</div>
+				<div class="values">
+					<input name="minReleaseDate" type="text" class="releaseDatePicker start"
+						placeholder="Released after" autocomplete="off"
+						value="<%= defaultValues.minReleaseDate %>">
+					<input name="maxReleaseDate" type="text" class="releaseDatePicker end"
+						placeholder="Release before" autocomplete="off"
+						value="<%= defaultValues.maxReleaseDate %>">
+				</div>
+			</div>
+			<div class="field">
+				<div class="label">Length</div>
+				<div class="values">
+					<input name="hours" type="number" min="0" step="1" placeholder="Hours" style="width:100px"
+						value="<%= defaultValues.hours %>" />
+					<input name="minutes" type="number" min="0" step="1" placeholder="Minutes" style="width:100px"
+						value="<%= defaultValues.minutes %>" />
+				</div>
+			</div>
+			<hr/>
+			<div class="field">
+				<div class="label">Cast Members</div>
+				<div class="values">
+					<%- include('../partials/castMemberSearchBox', { value: defaultValues.castMember }) %>
+				</div>
+			</div>
+			<hr/>
+			<div class="field">
+				<input type="hidden" name="sort" value="<%= JSON.stringify(defaultValues.sort) %>" />
+				<div class="label">Sort by</div>
+				<div class="values">
+					<% optionChoices.sort.forEach(sortOpt => { %>
+						<div class="filter-option radio <%= defaultValues.sort[sortOpt] %>" data-value="<%= sortOpt %>">
+							<span class="icon"></span>
+							<span><%= sortOpt %></span>
+						</div>
+					<% }); %>
+				</div>
+			</div>
+			<div class="field">
+				<div class="label">&nbsp;</div>
+				<button type="submit">Search</button>
+			</div>
+		</form>
+
+		<% if (shows.length) { %>
+			<div class="show-list">
+			<% shows.forEach(function(show) { %>
+				<%- include('../partials/show', { show: show }) %>
+			<% }); %>
+			</div>
+		<% } else { %>
+			<div class="no-results">
+				<h2>No matching search results</h2>
+				<p>Try again using more general search terms</p>
+				<a href="/search">
+					<button type="button">
+						<span>Clear All Filters</span>
+						<span class="icon"></span>
+					</button>
+				</a>
+			</div>
+		<% } %>
 	</div>
 </body>
 </html>

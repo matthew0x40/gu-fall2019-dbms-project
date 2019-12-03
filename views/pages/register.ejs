@@ -6,19 +6,46 @@
 <body>
 	<% include ../partials/navbar %>
 
-    <% if (locals.errorMessage) { %>
-        <div class="errorMessage"><%= errorMessage %></div>
-    <% } %>
-    <% if (locals.successMessage) { %>
-        <div class="successMessage"><%= successMessage %></div>
-    <% } %>
+	<div class="wrapper">
+		<h2 style="margin:20px 0 5px">Register</h2>
 
-	<form method="POST" action="/register">
-		<input type="text" name="name" required placeholder="Name"><br/>
-		<input type="text" name="email" required placeholder="Email"><br/>
-		<input type="password" name="password" required placeholder="Password"><br/>
+        <form class="form-box" method="POST" action="/register">
+            <% if (locals.errorMessage) { %>
+                <div class="errorMessage"><%= errorMessage %></div>
+            <% } %>
+            <% if (locals.successMessage) { %>
+                <div class="successMessage"><%= successMessage %></div>
+            <% } %>
 
-		<button type="submit">Create account</button>
-	</form>
+			<div class="field">
+				<label>Your Name:</label>
+				<div class="values">
+					<input type="text" name="name" required placeholder="Name">
+				</div>
+			</div>
+			<div class="field">
+				<label>Email:</label>
+				<div class="values">
+					<input type="text" name="email" required placeholder="Email">
+				</div>
+			</div>
+			<div class="field">
+				<label>Password:</label>
+				<div class="values">
+					<input type="password" name="password" required placeholder="Password">
+				</div>
+			</div>
+
+			<hr/>
+
+			<div class="field">
+				<label>&nbsp;</label>
+				<div class="values">
+					<button type="submit">Create account</button>
+				</div>
+			</div>
+        </form>
+    </div>
+
 </body>
 </html>

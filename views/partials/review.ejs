@@ -1,0 +1,8 @@
+<div class="review" id="review-<%= review.review_id %>">
+    <%- include('../partials/select-rating', {value: review.score, disabled: true}) %>
+    <p><%= review.review_text %></p>
+    <h4>Posted by <%= review.name %> on <%= review.review_date.toISOString().slice(0,10) %></p></h4>
+    <% if (review.website_url) { %>
+        <h5>Critic's Website: <a href="<%= review.website_url %>"><%= review.website_url %></a></h5>
+    <% } %>
+</div>

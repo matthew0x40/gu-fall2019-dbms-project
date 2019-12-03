@@ -1,0 +1,21 @@
+<div class="castMemberSearchBox">
+    <div class="castMemberSearchInputBox">
+        <input class="castMemberSearchInput" type="search" placeholder="Cast member name" />
+        <span class="castMemberSearchLoadingIcon loading small" style="display:none"></span>
+    </div>
+    <div class="castMemberSearchResults" style="display:none"></div>
+    <div class="castMemberSelectedValues">
+        <% if (locals.value) { %>
+            <% value.forEach(record => { %>
+                <div class="castMember" data-id="<%= record.cast_member_id %>"
+                        data-name="<%= record.first_name + ' ' + record.last_name %>"
+                        data-birthdate="<%= record.birth_date.toISOString().slice(0,10) %>">
+                    <span class="name"><%= record.first_name + ' ' + record.last_name %></span>
+                    <span class="birthDate"><%= record.birth_date.toISOString().slice(0,10) %></span>
+                    <input name="castMember" type="hidden" value="<%= record.cast_member_id %>">
+                    <button type="button">x</button>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+</div>

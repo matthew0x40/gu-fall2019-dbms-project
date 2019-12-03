@@ -1,0 +1,14 @@
+<div id="show-<%= show.show_id %>" class="show">
+    <a href="/<%= show.show_type %>/<%= show.show_id %>"><h3><%= show.name %></h3></a>
+    <%- include('../partials/select-rating', {value: show.score, disabled: true}) %>
+    <p>Type: <strong><%= show.show_type %></strong></p>
+    <p>Film-Rating: <strong><%= show.rating %></strong></p>
+    <p>Length:
+        <% let hours = show.length_minutes / 60 | 0;
+        let minutes = show.length_minutes % 60 | 0; %>
+        <% if (hours > 0) { %><strong><%= hours %> hours</strong><% } %>
+        <% if (minutes > 0) { %><strong><%= minutes %> minutes</strong><% } %>
+        <% if (show.show_type == 'tv-show') { %><span>&nbsp;per episode</span><% } %>
+    </p>
+    <p>Release Date: <strong><%= show.release_date.toISOString().slice(0,10) %></strong></p>
+</div>

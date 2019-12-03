@@ -29,12 +29,23 @@ router.post('/register', (req, res) => {
 });
 
 router.get('/login', function (req, res) {
+    if (req.session.loggedIn) {
+        // If already logged in, just redirect.
+        res.redirect(req.query.cont || '/');
+        return;
+    }
     res.render('pages/login', {
         cont: req.query.cont || '/'
     });
 });
 
 router.post('/login', function (req, res) {
+    if (req.session.loggedIn) {
+        // If already logged in, just redirect.
+        res.redirect(req.body.cont || '/');
+        return;
+    }
+
     if (!req.body.email || !req.body.password) {
         res.render('pages/login', {
             cont: req.body.cont || '/',
@@ -55,6 +66,7 @@ router.post('/login', function (req, res) {
                     });
                 } else {
                     req.session.regenerate(function(err) {
+                        req.session.loggedIn = true;
                         req.session.userId = userObj.user_id;
                         req.session.userType = userObj.user_type;
                         req.session.userName = userObj.name;

@@ -2,55 +2,71 @@
 
 const router = require('express').Router();
 const db = require('@/src/database.js');
+const search = require('@/src/advancedSearch.js');
 
-router.get('/', (req, res) => {
-    db.query('SELECT * FROM shows', function (error, results, fields) {
-        res.render('pages/index', {
-            shows: results,
-        });
+router.get('/', async (req, res) => {
+    const sortOption = req.query.sort || 'recent release';
+
+    res.render('pages/index', {
+        shows: await search.search({ sort: sortOption }),
+        sortOption: sortOption,
     });
 });
 
-router.get('/search', (req, res) => {
-    let searchText = req.query.q;
-
-    db.query('SELECT * FROM shows WHERE INSTR(name, ?) > 0', [ searchText ], function (error, results, fields) {
-        res.render('pages/searchResults', {
-            shows: results,
-            searchText: searchText,
-        });
+router.get('/search', async (req, res) => {
+    res.render('pages/searchResults', {
+        shows: await search.search(await search.parseQueryParams(req.query)),
+        optionChoices: (await search.getFilterOptionChoices()).available,
+        defaultValues: await search.getDefaultFieldValues(req.query),
     });
 });
 
-router.get('/leavereview', (req, res) => {
-    let showId = req.query.showId;
-    let rating = req.query.rating;
-    let reviewText = req.query.reviewText;
 
-    db.query('INSERT INTO review (show_id, review_text, score, review_date, reviewer_id) VALUES (?,?,?,?,?)' [show_id, reviewText, score, today(), userID], function (error, results, fields) {
-        res.render('pages/index', {
-            shows: results
-        });
-    });
-});
-
-router.get('/bestscores', (req, res) => {
-
-    db.query('SELECT * FROM review r JOIN shows s USING (show_id) GROUP BY r.show_id SORT BY AVG(r.score) DESC', function (error, results, fields) {
-        res.render('pages/bestScoreResults', {
-            shows: results,
-        });
-    });
-});
-
-router.get('/movie/:showId', (req, res) => {
+router.get('/:type(movie|tv-show)/:showId', async (req, res) => {
 	const showId = req.params.showId;
 
-    db.query('SELECT * FROM shows LEFT JOIN review USING (show_id) JOIN show_cast_member USING (show_id) JOIN cast_member USING (cast_member_id) WHERE show_id = ?', [ showId ], function (error, results, fields) {
-        res.render('pages/show', {
-            show: results,
-            showId: showId,
-        });
+    const show = await db.query(
+        `SELECT s.show_id, s.show_type, s.rating, s.name, s.release_date,
+                s.length_minutes, COALESCE(AVG(r.score),0) as score
+        FROM shows s LEFT JOIN review r USING (show_id) GROUP BY show_id
+        WHERE show_id = ?`, [ showId ]);
+
+    if (!show.length) {
+        res.render('pages/404');
+        return;
+    }
+
+    const orderByComponent = ({
+        recent: 'review_date DESC',
+        highestScore: ' score DESC',
+        lowestScore: 'score ASC',
+    })[req.params.sortReviews || 'recent'];
+
+    const castMembers = await db.query(`SELECT * FROM show_cast_member
+        JOIN cast_member USING (cast_member_id) WHERE show_id = ?`, [ showId ]);
+
+    const userReviews = await db.query(
+        `SELECT * FROM review r JOIN user_table u ON (r.reviewer_id = u.user_id)
+        WHERE show_id = ? HAVING user_type = 'normal' OR user_type = 'admin'
+        ORDER BY ${orderByComponent}`, [ showId ]);
+    const criticReviews = await db.query(
+        `SELECT * FROM review r JOIN user_table u ON (r.reviewer_id = u.user_id)
+        WHERE show_id = ? HAVING user_type = 'critic'
+        ORDER BY ${orderByComponent}`, [ showId ]);
+
+    let reviewErrorMessage = null;
+
+    if (req.session.leaveReviewError) {
+        reviewErrorMessage = req.session.leaveReviewError;
+        delete req.session.leaveReviewError;
+    }
+
+    res.render('pages/show', {
+        show: show && show[0],
+        castMembers: castMembers,
+        criticReviews: criticReviews,
+        userReviews: userReviews,
+        reviewErrorMessage: reviewErrorMessage,
     });
 });
 

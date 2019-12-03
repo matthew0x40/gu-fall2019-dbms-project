@@ -6,15 +6,19 @@
 <body>
 	<% include ../partials/navbar %>
 
+	<div class="toolbar">
+		<div class="toolbar-option">
+			<label>Sort</label>
+			<select>
+				<option>Recent</option>
+				<option>Highest Rating</option>
+			</select>
+		</div>
+	</div>
+
 	<div class="show-list">
     <% shows.forEach(function(show) { %>
-		<div class="show">
-			<a href="/movie/<%= show.show_id %>"><h3><%= show.name %></h3></a>
-			<p>Type: <strong><%= show.show_type %></strong></p>
-			<p>Rating: <strong><%= show.rating %></strong></p>
-			<p>Length: <strong><%= show.length_minutes %></strong></p>
-			<p>Release Date: <strong><%= show.release_date %></strong></p>
-		</div>
+		<%- include('../partials/show', { show: show }) %>
 	<% }); %>
 	</div>
 </body>

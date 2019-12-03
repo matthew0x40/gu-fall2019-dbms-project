@@ -3,18 +3,19 @@
 const bcrypt = require('bcryptjs');
 const db = require('@/src/database.js');
 
-const self = {
+class AuthTools {
 
     /**
      * callback(err, results)
      */
-    createUser: function(name, email, plainTextPass, website_url, callback) {
-        self.hashPassword(plainTextPass, function(err, hash) {
+    static createUser(name, email, plainTextPass, website_url, callback) {
+        AuthTools.hashPassword(plainTextPass, function(err, hash) {
             if (err)
                 return callback(err);
 
             const payload = {
                 name: name.trim(),
+                user_type: 'normal',
                 email: email.trim().toLowerCase(),
                 password: hash,
                 website_url: website_url || null,
@@ -27,13 +28,13 @@ const self = {
                 callback(undefined, results);
             });
         });
-    },
+    }
 
     /**
      * callback(err, results)
      */
-    changeUserPassword: function(userId, plainTextPass, callback) {
-        self.hashPassword(plainTextPass, function(err, hash) {
+    static changeUserPassword(userId, plainTextPass, callback) {
+        AuthTools.hashPassword(plainTextPass, function(err, hash) {
             if (err)
                 return callback(err);
 
@@ -44,24 +45,24 @@ const self = {
                 callback(undefined, results);
             });
         });
-    },
+    }
 
     /**
      * callback(err, hash)
      */
-    hashPassword: function(plainTextPass, callback) {
+    static hashPassword(plainTextPass, callback) {
         bcrypt.genSalt(10, function(err, salt) {
             if (!err)
                 bcrypt.hash(plainTextPass, salt, callback);
             else
                 callback(err);
         });
-    },
+    }
 
     /**
      * callback(err, result): result is falsey if password-check fails, otherwise user object (database entry) if successful
      */
-    checkPassword: function(email, plainTextPass, callback) {
+    static checkPassword(email, plainTextPass, callback) {
         email = email.trim().toLowerCase();
 
         db.query('SELECT * FROM user_table WHERE email = ?', [email], function (err, results, fields) {
@@ -80,6 +81,6 @@ const self = {
             });
         });
     }
-};
+}
 
-module.exports = self;
+module.exports = AuthTools;
