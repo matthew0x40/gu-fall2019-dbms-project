@@ -23,13 +23,13 @@ router.get('/search', async (req, res) => {
 
 
 router.get('/:type(movie|tv-show)/:showId', async (req, res) => {
-	const showId = req.params.showId;
+	const showId = parseInt(req.params.showId);
 
     const show = await db.query(
         `SELECT s.show_id, s.show_type, s.rating, s.name, s.release_date,
                 s.length_minutes, COALESCE(AVG(r.score),0) as score
-        FROM shows s LEFT JOIN review r USING (show_id) GROUP BY show_id
-        WHERE show_id = ?`, [ showId ]);
+        FROM shows s LEFT JOIN review r USING (show_id)
+        WHERE s.show_id = ? GROUP BY s.show_id`, [ showId ]);
 
     if (!show.length) {
         res.render('pages/404');
