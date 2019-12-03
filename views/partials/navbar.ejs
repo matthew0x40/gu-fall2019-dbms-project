@@ -7,7 +7,9 @@
 		</form>
 		<a id="advanced-search-link" href="/search">advanced search</a>
 	</div>
+	
 	<div class="right">
+		<a id="add-movie" href="/addmovie">Add Movie</a>
 		<% if (isLoggedIn) { %>
 			<span>Logged in as <%= locals.userName %> <a href="/logout">logout</a></span>
 		<% } else { %>
