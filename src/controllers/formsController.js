@@ -88,6 +88,11 @@ router.post('/forms/addNewMovie', async (req, res) => {
         return;
     }
     
+    if (!req.session.userType === 'admin') {
+        req.session.leaveReviewError = 'Must be admin.';
+        res.redirect(req.body.cont || '/');
+        return;
+    }
 
     try {
         const result = await db.query(
