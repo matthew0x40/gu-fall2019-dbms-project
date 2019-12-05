@@ -110,9 +110,11 @@ class AdvancedSearch {
         }
 
         if (searchTerms.castMember) {
-            foreach()
-            whereComponents.push(`csm.cast_member_id = ?`);
-            params.push(searchTerms.length_minutes);
+            whereComponents.push(
+                `(SELECT COUNT(*) FROM show_cast_member
+                WHERE show_id = s.show_id AND cast_member_id IN (?)) = ?`);
+            params.push(searchTerms.castMember);
+            params.push(searchTerms.castMember.length);
         }
 
         let whereComponent = whereComponents.length ? `WHERE ${whereComponents.join(' AND ')}` : '';
@@ -126,10 +128,12 @@ class AdvancedSearch {
         const query = `
             SELECT s.show_id, s.show_type, s.rating, s.name, s.release_date,
                 s.length_minutes, COALESCE(AVG(r.score),0) as score
-            FROM shows s LEFT JOIN review r USING (show_id) JOIN show_cast_member csm USING (show_id)
+            FROM shows s LEFT JOIN review r USING (show_id)
             ${whereComponent}
             GROUP BY show_id
             ${orderByComponent}`;
+
+        console.log(query);
 
         return await db.query(query, params);
     }
