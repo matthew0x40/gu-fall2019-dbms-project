@@ -104,6 +104,12 @@ class AdvancedSearch {
             params.push(searchTerms.length_minutes);
         }
 
+        if (searchTerms.castMember) {
+            foreach()
+            whereComponents.push(`csm.cast_member_id = ?`);
+            params.push(searchTerms.length_minutes);
+        }
+
         let whereComponent = whereComponents.length ? `WHERE ${whereComponents.join(' AND ')}` : '';
 
         let orderByComponent = ({
@@ -115,7 +121,7 @@ class AdvancedSearch {
         const query = `
             SELECT s.show_id, s.show_type, s.rating, s.name, s.release_date,
                 s.length_minutes, COALESCE(AVG(r.score),0) as score
-            FROM shows s LEFT JOIN review r USING (show_id)
+            FROM shows s LEFT JOIN review r USING (show_id) JOIN show_cast_member csm USING (show_id)
             ${whereComponent}
             GROUP BY show_id
             ${orderByComponent}`;
