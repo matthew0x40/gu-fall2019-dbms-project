@@ -10,7 +10,7 @@ module.exports = [
         secret: 'd366da96-53b3-43a1-a6e5-19f517162790',
         cookie: { maxAge: 86400 },
         resave: false,
-        saveUninitialized: false,
+        saveUninitialized: true,
         rolling: true,
         store: sessionStore,
     }),

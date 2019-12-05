@@ -8,6 +8,17 @@
 	<div class="wrapper">
 		<%- include('../partials/show', { show: show }) %>
 
+		<% if (isLoggedIn && userType === 'admin') { %>
+		<div class="admin-tools" style="display:flex">
+			<a href="/edit-show/<%= show.show_id %>">Edit Show</a>
+			<form method="POST" action="/forms/delete-show" style="margin-left:10px"
+					onsubmit="return confirm('Are you sure you want to delete the show?');">
+				<input type="hidden" name="showId" value="<%= show.show_id %>">
+				<button type="submit">Delete show</button>
+			</form>
+		</div>
+		<% } %>
+
 		<div class="showDetails">
 			<h3>Cast Members:</h3>
 			<% castMembers.forEach(function(member) { %>

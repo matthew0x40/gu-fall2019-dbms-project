@@ -21,9 +21,34 @@ router.get('/search', async (req, res) => {
     });
 });
 
-router.get('/addmovie', async (req, res) => {
-    res.render('pages/addMovie', {
+router.get('/add-show', async (req, res) => {
+    if (!req.session.loggedIn || req.session.userType !== 'admin') {
+        res.render('pages/404');
+        return;
+    }
+
+    res.render('pages/editShow', {
+        formLabel: 'Add',
+        showId: null,
         showRatingTypes: (await search.getFilterOptionChoices()).available.rating,
+        showData: {},
+    });
+});
+
+router.get('/edit-show/:showId', async (req, res) => {
+    if (!req.session.loggedIn || req.session.userType !== 'admin') {
+        res.render('pages/404');
+        return;
+    }
+
+	const showId = parseInt(req.params.showId);
+    const showData = (await db.query('SELECT * FROM shows WHERE show_id = ?', [ showId ]))[0];
+
+    res.render('pages/editShow', {
+        formLabel: 'Edit',
+        showId: showId,
+        showRatingTypes: (await search.getFilterOptionChoices()).available.rating,
+        showData: showData,
     });
 });
 

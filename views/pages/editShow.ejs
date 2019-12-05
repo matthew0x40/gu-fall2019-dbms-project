@@ -16,14 +16,16 @@
 	<% include ../partials/navbar %>
 	<div class="wrapper">
 
-		<h2>Add New Show</h2>
-		<form class="form-box" method="POST" action="/forms/addNewMovie">
+		<h2><%= formLabel %> Show</h2>
+		<form class="form-box" method="POST" action="/forms/edit-show">
+			<input type="hidden" name="showId" value="<%= showId || '' %>" />
+			<input type="hidden" name="cont" value="<%= currentURL %>" />
 			<div class="field">
 				<label>Show Type: </label>
 				<div class="values">
 					<select name="showType" required>
-						<option value="movie">Movie</option>
-						<option value="tv-show">TV-show</option>
+						<option value="movie" <%= showData.show_type == 'movie' ? 'selected' : '' %> >Movie</option>
+						<option value="tv-show" <%= showData.show_type == 'tv-show' ? 'selected' : '' %> >TV-show</option>
 					</select>
 				</div>
 			</div>
@@ -31,7 +33,8 @@
             <div class="field">
 				<label>Name: </label>
 				<div class="values">
-					<textarea class="form-control" name="showName" rows="1" cols="50" required></textarea>
+					<input type="text" class="form-control" name="showName"
+						value="<%= showData.name %>" required />
 				</div>
 			</div>
             <hr/>
@@ -40,7 +43,8 @@
 				<div class="values">
 					<select name="showRating" required>
 						<% showRatingTypes.forEach(ratingType => { %>
-							<option value="<%= ratingType %>"><%= ratingType %></option>
+							<option value="<%= ratingType %>"
+								<%= showData.rating == ratingType ? 'selected' : '' %>><%= ratingType %></option>
 						<% }) %>
 					</select>
 				</div>
@@ -49,21 +53,23 @@
             <div class="field">
 				<label>Release Date: </label>
 				<div class="values">
-					<input id="releaseDateInput" type="text" class="form-control" name="showRelease" required>
+					<input id="releaseDateInput" type="text" class="form-control" name="showRelease"
+						value="<%= showData.release_date ? showData.release_date.toISOString().slice(0,10) : '' %>" required>
 				</div>
 			</div>
             <hr/>
             <div class="field">
 				<label>Length: </label>
 				<div class="values">
-					<input type="number" class="form-control" name="showLength" placeholder="Length in minutes" required/>
+					<input type="number" class="form-control" name="showLength"
+						value="<%= showData.length_minutes %>" placeholder="Length in minutes" required/>
 				</div>
 			</div>
 			<hr/>
 			<div class="field">
 				<div class="label">&nbsp;</div>
 				<% if (isLoggedIn) { %>
-					<button type="submit">Submit new movie</button>
+					<button type="submit">Save</button>
 				<% } else { %>
 					<a href="/login">Register</a>
 					<span>&nbsp;or&nbsp;</span>
