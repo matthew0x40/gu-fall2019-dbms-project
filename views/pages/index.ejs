@@ -6,20 +6,14 @@
 <body>
 	<% include ../partials/navbar %>
 
-	<div class="toolbar">
-		<div class="toolbar-option">
-			<label>Sort</label>
-			<select>
-				<option>Recent</option>
-				<option>Highest Rating</option>
-			</select>
-		</div>
-	</div>
+	<div class="wrapper">
+		<h2>Recent shows</h2>
 
-	<div class="show-list">
-    <% shows.forEach(function(show) { %>
-		<%- include('../partials/show', { show: show }) %>
-	<% }); %>
+		<div class="show-list">
+		<% shows.forEach(function(show) { %>
+			<%- include('../partials/show', { show: show }) %>
+		<% }); %>
+		</div>
 	</div>
 </body>
 </html>

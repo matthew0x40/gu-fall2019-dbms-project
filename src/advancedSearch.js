@@ -43,6 +43,11 @@ class AdvancedSearch {
             return value;
         }
 
+        if (typeof queryParams.castMember !== 'undefined' && !Array.isArray(queryParams.castMember)) {
+            // Make sure queryParams.castMember is an array
+            queryParams.castMember = [ queryParams.castMember ];
+        }
+
         return {
             title: (queryParams.title || '').trim(),
             type: handleFilterOption('type'),
@@ -61,10 +66,10 @@ class AdvancedSearch {
         };
     }
     static async search(searchTerms) {
-        console.log(searchTerms);
-
         let whereComponents = [];
         let params = [];
+
+        console.log(searchTerms);
 
         function handleFilterOption(col, prop) {
             if (searchTerms[prop]) {
@@ -120,9 +125,6 @@ class AdvancedSearch {
             GROUP BY show_id
             ${orderByComponent}`;
 
-        console.log(query);
-        console.log(params);
-
         return await db.query(query, params);
     }
     static async parseQueryParams(queryParams) {
@@ -166,6 +168,11 @@ class AdvancedSearch {
 
         if (!filterOptionChoices.available.sort.includes(sortOption)) {
             sortOption = filterOptionChoices.default.sort;
+        }
+
+        if (typeof queryParams.castMember !== 'undefined' && !Array.isArray(queryParams.castMember)) {
+            // Make sure queryParams.castMember is an array
+            queryParams.castMember = [ queryParams.castMember ];
         }
 
         return {
